@@ -109,7 +109,8 @@ Swipe.prototype.unbind = function(){
  */
 
 Swipe.prototype.ontouchstart = function(e){
-  e.stopPropagation();
+  e.preventDefault();
+  e.stopPropagation();  
   if (e.touches) e = e.touches[0];
 
   this.transitionDuration(0);
