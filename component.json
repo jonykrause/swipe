@@ -7,7 +7,7 @@
   "dependencies": {
     "component/emitter": "1.0.0",
     "component/events": "1.0.2",
-    "jonykrause/translate": "*",
+    "jonykrause/translate": "flexible-unit",
     "jkroso/computed-style": "0.1.0"
   },
   "development": {
