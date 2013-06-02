@@ -29,6 +29,7 @@ function Swipe(el) {
   this.child = el.children[0];
   this.currentEl = this.children().visible[0];
   this.currentVisible = 0;
+  this.itemsToSwipe = 1;
   this.sensitivity = 1;
   this.current = 0;
   this.el = el;
@@ -306,7 +307,7 @@ Swipe.prototype.isFirst = function(){
  */
 
 Swipe.prototype.isLast = function(){
-  return this.currentVisible == this.visible - 1;
+  return this.currentVisible == this.visible - this.itemsToSwipe;
 };
 
 /**
@@ -317,7 +318,7 @@ Swipe.prototype.isLast = function(){
  */
 
 Swipe.prototype.prev = function(){
-  this.show(this.currentVisible - 1);
+  this.show(this.currentVisible - this.itemsToSwipe);
   return this;
 };
 
@@ -329,7 +330,7 @@ Swipe.prototype.prev = function(){
  */
 
 Swipe.prototype.next = function(){
-  this.show(this.currentVisible + 1);
+  this.show(this.currentVisible + this.itemsToSwipe);
   return this;
 };
 
