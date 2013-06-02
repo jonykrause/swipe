@@ -33,7 +33,6 @@ function Swipe(el) {
   this.sensitivity = 1;
   this.current = 0;
   this.el = el;
-  this.refresh();
   this.interval(5000);
   this.duration(300);
   this.show(0, 0, { silent: true });
