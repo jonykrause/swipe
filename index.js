@@ -29,6 +29,7 @@ function Swipe(el) {
   this.child = el.children[0];
   this.currentEl = this.children().visible[0];
   this.currentVisible = 0;
+  this.sensitivity = 1;
   this.current = 0;
   this.el = el;
   this.refresh();
