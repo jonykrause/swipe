@@ -3,8 +3,7 @@
  * Module dependencies.
  */
 
-var transform = require('transform-property');
-var has3d = require('has-translate3d');
+var translate = require('translate');
 var style = require('computed-style');
 var Emitter = require('emitter');
 var events = require('events');
@@ -169,7 +168,7 @@ Swipe.prototype.ontouchmove = function(e){
   var dir = this.dx < 0 ? 1 : 0;
   if (this.isFirst() && 0 == dir) this.dx /= 2;
   if (this.isLast() && 1 == dir) this.dx /= 2;
-  this.translate((i * w) + -this.dx);
+  translate(this.child, -((i * w) + -this.dx / this.sensitivity), 0, '%');
 };
 
 /**
@@ -351,7 +350,7 @@ Swipe.prototype.show = function(i, ms, options){
   this.currentEl = children.visible[i];
   this.current = indexOf(children.all, this.currentEl);
   this.transitionDuration(ms);
-  this.translate(this.childWidth * i);
+  translate(this.child, -this.childWidth * i, 0, '%');
   if (!options.silent) this.emit('show', this.current, this.currentEl);
   return this;
 };
@@ -397,24 +396,6 @@ Swipe.prototype.transitionDuration = function(ms){
   s.msTransition = ms + 'ms -ms-transform';
   s.OTransition = ms + 'ms -o-transform';
   s.transition = ms + 'ms transform';
-};
-
-/**
- * Translate to `x`.
- *
- * TODO: use translate component
- *
- * @api private
- */
-
-Swipe.prototype.translate = function(x){
-  var s = this.child.style;
-  x = -x;
-  if (has3d) {
-    s[transform] = 'translate3d(' + x + 'px, 0, 0)';
-  } else {
-    s[transform] = 'translateX(' + x + 'px)';
-  }
 };
 
 /**
