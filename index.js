@@ -282,7 +282,7 @@ Swipe.prototype.stop = function(){
 
 Swipe.prototype.cycle = function(){
   if (this.isLast()) {
-    this.currentVisible = -1;
+    this.currentVisible = -this.itemsToSwipe;
     this.next();
   } else {
     this.next();
