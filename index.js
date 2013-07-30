@@ -6,7 +6,6 @@
 var translate = require('translate');
 var style = require('computed-style');
 var Emitter = require('emitter');
-var event = require('event');
 var events = require('events');
 var min = Math.min;
 var max = Math.max;
