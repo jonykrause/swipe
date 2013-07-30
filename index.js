@@ -149,6 +149,7 @@ Swipe.prototype.unbind = function(){
 
 Swipe.prototype.ontouchstart = function(e){
   e.stopPropagation();  
+  this.el.classList.add('touchmoving');  
   if (e.touches) e = e.touches[0];
 
   this.transitionDuration(0);
@@ -221,6 +222,7 @@ Swipe.prototype.ontouchend = function(e){
   if (!this.down) return;
   e.stopPropagation();
 
+  this.el.classList.remove('touchmoving');
   // touches
   if (e.changedTouches) e = e.changedTouches[0];
 
