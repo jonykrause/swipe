@@ -7,6 +7,11 @@
 
     $ component install component/swipe
 
+## Events
+
+- `showing` (i, pane): when the transition to another pane begins
+- `show` (i, pane): when the transition to another pane finishes
+
 ## API
 
 ### Swipe(el)
@@ -14,6 +19,27 @@
   Create a swipe object for `el`. This should be a container element
   that wraps a list of several items. View ./example.html for a
   working example.
+
+### .threshold(n)
+
+  Set the swipe threshold to `n`.
+
+  This is the factor required for swipe
+  to detect when a slide has passed the
+  given threshold, and may display the next
+  or previous slide. For example the default
+  of `.5` means that the user must swipe _beyond_
+  half of the side width.
+
+### .fastThreshold(ms)
+
+ Set the "fast" swipe threshold to `ms`.
+
+ This is the amount of time in milliseconds
+ which determines if a swipe was "fast" or not. When
+ the swipe's duration is less than `ms` only 1/10th of
+ the slide's width must be exceeded to display the previous
+ or next slide.
 
 ### .duration(ms)
 
@@ -52,12 +78,12 @@
 
   Show the next item if present, or do nothing.
 
-### .show(i, [ms])
+### .show(i, [ms], [options])
 
   Show item with the given index `i` with the given
   transition in `ms` defaulting to the `.duration()` value.
 
-  Emit \`show\` event passing the element index and the element itself.
+  You may pass `{ silent: true }` as an option to silence show events.
 
 ## License
 
