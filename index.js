@@ -388,7 +388,7 @@ Swipe.prototype.show = function(i, ms, options){
   if (null == ms) ms = this._duration;
   var self = this;
   var children = this.children();
-  i = max(0, min(i, children.visible.length - 1));
+  i = max(0, min(i, children.visible.length - this.itemsToSwipe));
   this.currentVisible = i;
   this.currentEl = children.visible[i];
   this.current = indexOf(children.all, this.currentEl);
