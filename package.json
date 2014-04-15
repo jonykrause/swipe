@@ -16,7 +16,7 @@
     "event-component": "0.1.0",
     "events-component-2": "1.0.2",
     "jonykrause/translate": "*",
-    "computed-style-component": "0.1.0"
+    "computed-style-component": "0.1.0",
     "has-translate3d": "0.0.2",
     "transform-property": "0.0.1",
     "touchaction-property": "0.0.1",
