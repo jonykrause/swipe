@@ -4,6 +4,10 @@
  */
 
 var translate = require('translate');
+var transitionend = require('transitionend-property');
+var transform = require('transform-property');
+var touchAction = require('touchaction-property');
+var has3d = require('has-translate3d');
 var style = require('computed-style');
 var Emitter = require('emitter');
 var events = require('events');
@@ -27,6 +31,7 @@ function Swipe(el) {
   if (!(this instanceof Swipe)) return new Swipe(el);
   if (!el) throw new TypeError('Swipe() requires an element');
   this.child = el.children[0];
+  this.touchAction('none');
   this.currentEl = this.children().visible[0];
   this.visible = this.children().visible.length;
   this.unit = '%';
@@ -38,7 +43,7 @@ function Swipe(el) {
   this.interval(5000);
   this.duration(300);
   this.fastThreshold(200);
-  this.threshold(.5);
+  this.threshold(0.5);
   this.show(0, 0, { silent: true });
   this.bind();
 }
@@ -120,14 +125,22 @@ Swipe.prototype.refresh = function(){
 
 Swipe.prototype.bind = function(){
   this.events = events(this.child, this);
+  this.docEvents = events(document, this);
+
+  // standard mouse click events
   this.events.bind('mousedown', 'ontouchstart');
   this.events.bind('mousemove', 'ontouchmove');
+  this.docEvents.bind('mouseup', 'ontouchend');
+
+  // W3C touch events
   this.events.bind('touchstart');
   this.events.bind('touchmove');
-
-  this.docEvents = events(document, this);
-  this.docEvents.bind('mouseup', 'ontouchend');
   this.docEvents.bind('touchend');
+
+  // MS IE touch events
+  this.events.bind('PointerDown', 'ontouchstart');
+  this.events.bind('PointerMove', 'ontouchmove');
+  this.docEvents.bind('PointerUp', 'ontouchstart');
 };
 
 /**
@@ -148,18 +161,15 @@ Swipe.prototype.unbind = function(){
  */
 
 Swipe.prototype.ontouchstart = function(e){
-  e.stopPropagation();    
-  if (e.touches) e = e.touches[0];
-
   this.transitionDuration(0);
   this.dx = 0;
-  this.lock = false;
-  this.ignore = false;
+  this.updown = null;
 
+  var touch = this.getTouch(e);
   this.down = {
-    x: e.pageX,
-    y: e.pageY,
-    at: new Date
+    x: touch.pageX,
+    y: touch.pageY,
+    at: new Date()
   };
 };
 
@@ -174,37 +184,34 @@ Swipe.prototype.ontouchstart = function(e){
  */
 
 Swipe.prototype.ontouchmove = function(e){
-  if (!this.down || this.ignore) return;
-  if (e.touches && e.touches.length > 1) return;
-  this.el.classList.add('touchmoving');
-  if (e.touches) {
-    var ev = e;
-    e = e.touches[0];
-  }
-  var s = this.down;
-  var x = e.pageX;
+  if (!this.down || this.updown) return;
+  var touch = this.getTouch(e);
+
+  // TODO: ignore more than one finger
+  if (!touch) return;
+
+  var down = this.down;
+  var x = touch.pageX;
   var w = this.childWidth;
   var i = this.currentVisible;
-  this.dx = x - s.x;
+  this.dx = x - down.x;
 
   // determine dy and the slope
-  if (!this.lock) {
-    this.lock = true;
-    var y = e.pageY;
-    var dy = y - s.y;
+  if (null == this.updown) {
+    var y = touch.pageY;
+    var dy = y - down.y;
     var slope = dy / this.dx;
 
     // if is greater than 1 or -1, we're swiping up/down
     if (slope > 1 || slope < -1) {
-      this.ignore = true;
+      this.updown = true;
       return;
+    } else {
+      this.updown = false;
     }
   }
 
-  // when we overwrite touch event with e.touches[0], it doesn't
-  // have the preventDefault method. e.preventDefault() prevents
-  // multiaxis scrolling when moving from left to right
-  (ev || e).preventDefault();
+  e.preventDefault();
 
   var dir = this.dx < 0 ? 1 : 0;
   if (this.isFirst() && 0 == dir) this.dx /= 2;
@@ -219,20 +226,20 @@ Swipe.prototype.ontouchmove = function(e){
  */
 
 Swipe.prototype.ontouchend = function(e){
-  if (!this.down) return;
   e.stopPropagation();
-
   this.el.classList.remove('touchmoving');
   // touches
   if (e.changedTouches) e = e.changedTouches[0];
+  if (!this.down) return;
+  var touch = this.getTouch(e);
 
   // setup
   var dx = this.dx;
-  var x = e.pageX;
+  var x = touch.pageX;
   var w = this.childWidth;
 
   // < 200ms swipe
-  var ms = new Date - this.down.at;
+  var ms = new Date() - this.down.at;
   var threshold = ms < this._fastThreshold ? w / 10 : w * this._threshold;
   var dir = dx < 0 ? 1 : 0;
   var half = Math.abs(dx) >= threshold;
@@ -439,6 +446,36 @@ Swipe.prototype.transitionDuration = function(ms){
   s.msTransition = ms + 'ms -ms-transform';
   s.OTransition = ms + 'ms -o-transform';
   s.transition = ms + 'ms transform';
+};
+
+/**
+ * Sets the "touchAction" CSS style property to `value`.
+ *
+ * @api private
+ */
+
+Swipe.prototype.touchAction = function(value){
+  var s = this.child.style;
+  if (touchAction) {
+    s[touchAction] = value;
+  }
+};
+
+/**
+ * Gets the appropriate "touch" object for the `e` event. The event may be from
+ * a "mouse", "touch", or "Pointer" event, so the normalization happens here.
+ *
+ * @api private
+ */
+
+Swipe.prototype.getTouch = function(e){
+  // "mouse" and "Pointer" events just use the event object itself
+  var touch = e;
+  if (e.changedTouches && e.changedTouches.length > 0) {
+    // W3C "touch" events use the `changedTouches` array
+    touch = e.changedTouches[0];
+  }
+  return touch;
 };
 
 /**

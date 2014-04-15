@@ -1,4 +1,25 @@
 
+1.7.4 / 2013-11-15
+==================
+
+  * Revert "use component/indexof"
+
+1.7.3 / 2013-11-13
+==================
+
+ * package: use GitHub tarball URL for indexof component
+
+1.7.2 / 2013-11-13
+==================
+
+ * Add touch support for IE (@tootallnate)
+ * use component/indexof (@tootallnate)
+
+1.7.1 / 2013-07-31
+==================
+
+ * fixed jumpiness when scrolling and quickly stopping scroll
+
 1.7.0 / 2013-07-11
 ==================
 
