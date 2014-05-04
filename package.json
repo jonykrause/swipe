@@ -11,6 +11,7 @@
     "touch",
     "ui"
   ],
+  "browser": "./browser-npm.js",
   "dependencies": {
     "emitter-component": "1.0.0",
     "event-component": "0.1.0",
