@@ -13,7 +13,7 @@
   ],
   "dependencies": {
     "emitter-component": "1.0.0",
-    "event-component": "0.1.4",
+    "event-component": "0.1.0",
     "events-component-2": "1.0.5",
     "translate": "git+ssh://git@github.com:jonykrause/translate.git#flexible-unit",
     "computed-style-component": "0.1.0",
