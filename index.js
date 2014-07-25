@@ -213,6 +213,11 @@ Swipe.prototype.ontouchmove = function(e){
 
   e.preventDefault();
 
+  if (!this.el.classList.contains('is-touchmoving')) {
+    this.el.classList.add('is-touchmoving');
+  }
+
+
   var dir = this.dx < 0 ? 1 : 0;
   if (this.isFirst() && 0 == dir) this.dx /= 2;
   if (this.isLast() && 1 == dir) this.dx /= 2;
@@ -246,6 +251,8 @@ Swipe.prototype.ontouchend = function(e){
 
   // clear
   this.down = null;
+
+  this.el.classList.remove('is-touchmoving');
 
   // first -> next
   if (this.isFirst() && 1 == dir && half) return this.next();
